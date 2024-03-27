@@ -228,3 +228,101 @@ Displaying records in descending order
 (7, 'Ben', 'Road N0 4, Gandhinagar')
 
 (2, 'Amy', 'Apple st 652')
+import numpy as np
+
+from sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+import matplotlib.pyplot as plt
+
+from matplotlib.colors import ListedColormap
+
+def euclidean_distance(x1, x2):
+
+ return np.sqrt(np.sum((x1 - x2)**2))
+
+class KNN:
+
+ def __init__(self, k=3):
+ self.k = k
+
+ def fit(self, X, y):
+
+ self.X_train = X
+
+ self.y_train = y
+
+ def predict(self, X):
+
+ y_pred = [self._predict(x) for x in X]
+
+ return np.array(y_pred)
+
+ def _predict(self, x):
+
+ # Compute distances between x and all examples in the training set
+
+ distances = [euclidean_distance(x, x_train) for x_train in self.X_train]
+
+ # Sort by distance and return indices of the first k neighbors
+
+ k_idx = np.argsort(distances)[:self.k]
+
+ # Extract the labels of the k nearest neighbor training samples
+
+ k_neighbor_labels = [self.y_train[i] for i in k_idx] 
+
+ # return the most common class label
+
+ most_common = Counter(k_neighbor_labels).most_common(1)
+
+ return most_common[0][0]
+
+#Expt3.py file
+
+import numpy as np
+
+from collections import Counter
+
+# import the KNN implementation from knn.py
+
+from knn import KNN 
+
+cmap=ListedColormap(["#000FFF", "#FFF000","#00FF00"])
+
+# Iris data has 50 samples for each different species of Iris flower(total of 150 examples). 
+
+# For each sample we have 4 features sepal length, width and petal length and width and a iris species
+
+name(class/label).
+
+# Load iris dataset
+
+iris=datasets.load_iris()
+
+X,y=iris.data,iris.target
+
+# Viualize sepal length, sepal width data of iris data
+
+print( “Plot showing sepal length, sepal width data of iris data”)
+
+plt.figure()
+
+plt.scatter(X[:,0],X[:,1],c=y,cmap=cmap,edgecolor='none',s=40)
+
+plt.show()
+
+# split data into train and test set
+
+Xtrain, Xtest, Ytrain, Ytest= train_test_split(X,y,test_size=0.2, random_state=1234)
+
+clf=KNN(k=5)
+
+clf.fit(Xtrain,Ytrain)
+
+predictions=clf.predict(Xtest)
+
+acc=np.sum(predictions==Ytest)/len(Ytest)
+
+print("Accuracy of user defined KNN classifier for k=5 neighbors on iris dataset is: %0.3f "%acc)
